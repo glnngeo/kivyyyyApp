@@ -1,0 +1,111 @@
+WindowManager:
+    FirstWindow:
+    SecondWindow:
+
+<FirstWindow>:
+    name: "first"
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: 0.6, 0.7
+        pos_hint: {'center_x': 0.5,'center_y': 0.5}
+
+        GridLayout:
+            cols: 2
+            size_hint_y: None
+            height: "48dp"
+
+            MDLabel:
+                text: "Welcome"
+                size_hint_y: None
+                height: "48dp"
+                halign: "center"
+                font_style: 'H5'
+                bold: True
+
+            MDIconButton:
+                icon: "information"
+                on_release: app.about_dialog()
+                
+        Image:
+            source: "download.jpg"
+            size_hint_y: None
+            height: "200dp"
+
+        MDLabel:
+            text: "Cebuano to Butuanon Conversion"
+            font_style: "H6"
+            bold: True
+            halign: 'center'
+        
+        TextInput:
+            id: server_address_input
+            hint_text: "Server Address"
+            size_hint: 1,0.8
+            padding: 20
+
+        BoxLayout:
+            size_hint_y: None
+            height: "48dp"  # Adjust the height as needed
+            spacing: 20
+
+            MDFillRoundFlatIconButton:
+                id: save_server
+                text: 'Add Server'
+                font_style: "Button"
+                icon: "server"
+                size_hint_x: 0.3
+                padding:15
+                on_release: root.set_server_address(server_address_input.text)
+
+            MDFillRoundFlatIconButton:
+                text: 'Choose File'
+                font_style: "Button"
+                icon: 'camera-wireless'
+                size_hint_x: 0.3
+                padding:15
+                on_release:
+                    app.root.current = "second"
+                    root.manager.transition.direction = "left"
+
+<SecondWindow>:
+    name: "second"
+    id: my_widget
+    BoxLayout:
+        orientation: 'vertical'
+        size: root.width, root.height
+        padding: 50
+        
+        canvas.before:
+            Color:
+                rgba: 0.2, 0.2, 0.2, 1  
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Image:
+            id: img_display
+            source:""
+
+        FileChooserIconView:
+            rootpath: '/storage/emulated/0/' if kivy.utils.platform == 'android' else '/'            
+            id: filechooser
+            on_selection: root.importImage(filechooser.selection)
+
+        BoxLayout:
+            size_hint_y: None
+            height: "48dp"  # Adjust the height as needed
+            spacing: 20
+
+            MDFillRoundFlatIconButton:
+                text: "Cancel"
+                size_hint_x: 0.33
+                on_release:
+                    app.root.current = "first"
+                    root.manager.transition.direction = "right"
+
+            MDFillRoundFlatIconButton:
+                text: "Upload"
+                size_hint_x: 0.33
+                on_release:
+                    root.extract_and_translate();
+                    # root.translate()
